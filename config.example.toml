@@ -1,0 +1,27 @@
+[fetch]
+# Parallel workers while pulling the public lists.
+workers = 12
+timeout = 20
+
+[validate]
+# Only ports your egress actually allows. Everything else is unreachable no
+# matter how healthy the proxy is, so it is dropped before any probe is spent.
+ports = [80, 443, 8080, 3128]
+connect_timeout = 6
+http_timeout = 12
+workers = 60
+# Per-proxy HTTP check target. httpbin echoes the egress IP.
+check_url = "http://httpbin.org/ip"
+https_url = "https://api.ipify.org"
+# Optional: keep only proxies that reach this host (per-consumer scoping).
+target_url = ""
+
+[browser]
+# Stage 2: confirm in the real client. A proxy that answers urllib can still
+# hang on Chromium's CONNECT handshake.
+enabled = true
+max_confirm = 40
+timeout = 25
+
+[export]
+out_dir = "out"
